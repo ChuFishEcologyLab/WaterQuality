@@ -3,7 +3,7 @@
 #' @param type data type.
 #'
 #' @export
-wq_prepare_data <- function(type = c("water_chemistry")) {
+wq_prepare_data <- function(type = c("water_chemistry", "hydrobasins_sites", "hydrobasins_lvl07", "hydrobasins_lvl12")) {
   type <- match.arg(type)
   switch(type,
     water_chemistry = path_input_data("water_chemistry_2025.csv") |>
@@ -12,8 +12,14 @@ wq_prepare_data <- function(type = c("water_chemistry")) {
       dplyr::mutate(
         sample_date = sample_date |> as.Date(format = "%m/%d/%Y")
       ) |>
-      sf::st_as_sf(coords = c("longitude", "latitude")),
-    cli::cli_abort("unknwon data type")
+      terra::vect(geom = c("longitude", "latitude")),
+    hydrobasins_sites = path_input_data("hydrobasins_sites.gpkg") |>
+      terra::vect(),
+    hydrobasins_lvl07 = path_input_data("hydrobasins_lvl07.gpkg") |>
+      terra::vect(),
+    hydrobasins_lvl12 = path_input_data("hydrobasins_lvl12.gpkg") |>
+      terra::vect(),
+    cli::cli_abort("Unknown data type")
   )
 }
 

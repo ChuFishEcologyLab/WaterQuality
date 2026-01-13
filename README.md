@@ -13,3 +13,6 @@ Examine how water chemistry exceedances (values that are not within the range fo
 ## Running the analysis
 
 ⚠️ Before running the analysis, please download raw-data.
+
+
+Using HMv20240801_2022s_AA_300.tif

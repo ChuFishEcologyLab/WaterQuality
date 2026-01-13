@@ -18,13 +18,15 @@ Imports:
 	dplyr,
 	fs,
     ggplot2,
+    janitor,
     patchwork,
-	sf,
+    terra,
     tidyr,
     utils
 Suggests:
     knitr,
     rmarkdown,
+	sf,
     testthat (>= 3.0.0)
 RoxygenNote: 7.3.3
 LazyLoad: yes

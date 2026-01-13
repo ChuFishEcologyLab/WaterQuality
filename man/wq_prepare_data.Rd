@@ -4,7 +4,10 @@
 \alias{wq_prepare_data}
 \title{Read data}
 \usage{
-wq_prepare_data(type = c("water_chemistry"))
+wq_prepare_data(
+  type = c("water_chemistry", "hydrobasins_sites", "hydrobasins_lvl07",
+    "hydrobasins_lvl12")
+)
 }
 \arguments{
 \item{type}{data type.}
