@@ -6,7 +6,7 @@
 \usage{
 wq_prepare_data(
   type = c("water_chemistry", "hydrobasins_sites", "hydrobasins_lvl07",
-    "hydrobasins_lvl12", "val_lvl07", "val_lvl12")
+    "hydrobasins_lvl12", "val_lvl07", "val_lvl12", "master_data")
 )
 }
 \arguments{
@@ -18,6 +18,7 @@ wq_prepare_data(
 \item \code{"hydrobasins_lvl12"}: Level 12 hydrobasins polygons as SpatVector
 \item \code{"val_lvl07"}: Cumulative threats for level 7 hydrobasins as data frame
 \item \code{"val_lvl12"}: Cumulative threats for level 12 hydrobasins as data frame
+\item \code{"master_data"}: Master dataset as data frame
 }}
 }
 \value{

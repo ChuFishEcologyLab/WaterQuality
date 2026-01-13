@@ -60,7 +60,7 @@ val_lvl07 <- val_lvl07_hp  |>
             )
     )
 
-utils::write.csv(val_lvl07, "inst/extdata/val_lvl07.csv")
+utils::write.csv(val_lvl07, "inst/extdata/val_lvl07.csv", row.names = FALSE)
 
 
 val_lvl12_hp <- terra::extract(cum_threat_hp, wc_lvl12)
@@ -82,7 +82,7 @@ val_lvl12 <- val_lvl12_hp |>
                 theobald = mean(cum_threat2020.02.18, na.rm = TRUE)
             )
     )
-utils::write.csv(val_lvl12, "inst/extdata/val_lvl12.csv")
+utils::write.csv(val_lvl12, "inst/extdata/val_lvl12.csv", row.names = FALSE)
 
 
 # Prepare master data frame

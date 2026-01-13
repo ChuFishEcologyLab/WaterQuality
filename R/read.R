@@ -7,12 +7,13 @@
 #' - `"hydrobasins_lvl12"`: Level 12 hydrobasins polygons as SpatVector
 #' - `"val_lvl07"`: Cumulative threats for level 7 hydrobasins as data frame
 #' - `"val_lvl12"`: Cumulative threats for level 12 hydrobasins as data frame
+#' - `"master_data"`: Master dataset as data frame
 #'
 #' @return For spatial data types (water_chemistry, hydrobasins_*), returns a
 #'   SpatVector object. For zonal statistics (val_lvl*), returns a data frame.
 #'
 #' @export
-wq_prepare_data <- function(type = c("water_chemistry", "hydrobasins_sites", "hydrobasins_lvl07", "hydrobasins_lvl12", "val_lvl07", "val_lvl12")) {
+wq_prepare_data <- function(type = c("water_chemistry", "hydrobasins_sites", "hydrobasins_lvl07", "hydrobasins_lvl12", "val_lvl07", "val_lvl12", "master_data")) {
   type <- match.arg(type)
   switch(type,
     water_chemistry = path_input_data("water_chemistry_2025.csv") |>
@@ -35,6 +36,9 @@ wq_prepare_data <- function(type = c("water_chemistry", "hydrobasins_sites", "hy
       utils::read.csv() |>
       janitor::clean_names(),
     val_lvl12 = path_input_data("val_lvl12.csv") |>
+      utils::read.csv() |>
+      janitor::clean_names(),
+    master_data = path_input_data("master_dataset.csv") |>
       utils::read.csv() |>
       janitor::clean_names(),
     cli::cli_abort("Unknown data type")

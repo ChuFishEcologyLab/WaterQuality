@@ -33,5 +33,4 @@ run_analysis <- function() {
       by = dplyr::join_by(h12_id)
     )
 
-  cli::cli_h1("Running Linear Models")
 }

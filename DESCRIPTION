@@ -7,7 +7,7 @@ Authors@R: c(
     person("Cindy", "Chu", email = "Cindy.Chu@dfo-mpo.gc.ca", role = c("aut", "cre")),
     person("inSileco Inc.", comment = "https://insileco.io/", role = c("aut"))
     )
-Description: Examine how water chemistry exceedances varies with intensity of human activities
+Description: Examine how water chemistry exceedances varies with intensity of human activities.
 Encoding: UTF-8
 License: MIT + file LICENSE
 Roxygen: list(markdown = TRUE)
@@ -15,13 +15,16 @@ Depends:
     R (>= 4.2)
 Imports:
     cli,
+    config,
 	dplyr,
 	fs,
     ggplot2,
+    golem,
     janitor,
     patchwork,
+    shiny,
+    stats,
     terra,
-    tidyr,
     utils
 Suggests:
     knitr,
