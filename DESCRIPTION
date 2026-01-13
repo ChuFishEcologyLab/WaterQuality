@@ -19,12 +19,14 @@ Imports:
 	fs,
     ggplot2,
     patchwork,
-	readr,
-	readxl,
 	sf,
-    tidyr
+    tidyr,
+    utils
 Suggests:
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 RoxygenNote: 7.3.3
 LazyLoad: yes
 Config/testthat/edition: 3
+VignetteBuilder: knitr

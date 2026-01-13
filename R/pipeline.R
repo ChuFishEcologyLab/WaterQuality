@@ -1,7 +1,7 @@
 #' Analysis pipeline
-#' 
-#' @export 
-#' 
+#'
+#' @export
+#'
 run_pipeline <- function() {
-    NULL
+  NULL
 }
