@@ -21,7 +21,7 @@ library(WaterQuality)
 
 # Objectif 
 
-Examine how water chemistry exceedances (values that are not within the range for the protection of aquatic life) varies with intensity of human activities
+Examine how water chemistry exceedances (values that are not within the range for the protection of aquatic life) varies with intensity of human activities.
 
 
 

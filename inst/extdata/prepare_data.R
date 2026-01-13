@@ -22,7 +22,7 @@ sf::read_sf(
 
 # Value Extraction fron the two large datasets 
 
-##  Hirsh-Pearson dataset 
+## Hirsh-Pearson dataset 
 
 wc_sites  <- terra::vect("inst/extdata/hydrobasins_sites.gpkg")
 wc_lvl07  <- terra::vect("inst/extdata/hydrobasins_lvl07.gpkg")
@@ -40,10 +40,10 @@ cum_threat_th <- terra::rast(
 
 
 val_lvl07_hp  <- terra::extract(cum_threat_hp, wc_lvl07)
-val_lvl07_hp$H07ID <- wc_lvl07$HyB7ID[val_lvl07_hp$ID]
+val_lvl07_hp$H7_ID <- wc_lvl07$HyB7ID[val_lvl07_hp$ID]
 
 val_lvl07_th <- terra::extract(cum_threat_hp, wc_lvl07)
-val_lvl07_th$H07ID <- wc_lvl07$HyB7ID[val_lvl07_th$ID]
+val_lvl07_th$H7_ID <- wc_lvl07$HyB7ID[val_lvl07_th$ID]
 
 # using the mean 
 
@@ -64,23 +64,25 @@ utils::write.csv(val_lvl07, "inst/extdata/val_lvl07.csv")
 
 
 val_lvl12_hp <- terra::extract(cum_threat_hp, wc_lvl12)
-val_lvl12_hp$H12ID <- wc_lvl12$H12_ID[val_lvl12_hp$ID]
+val_lvl12_hp$H12_ID <- wc_lvl12$H12_ID[val_lvl12_hp$ID]
 
 val_lvl12_th <- terra::extract(cum_threat_hp, wc_lvl12)
-val_lvl12_th$H12ID <- wc_lvl12$H12_ID[val_lvl12_th$ID]
+val_lvl12_th$H12_ID <- wc_lvl12$H12_ID[val_lvl12_th$ID]
 
 
 val_lvl12 <- val_lvl12_hp |>
-    dplyr::group_by(H12ID) |>
+    dplyr::group_by(H12_ID) |>
     dplyr::summarise(
         hirsh_pearson = mean(cum_threat2020.02.18, na.rm = TRUE)
     ) |>
     dplyr::inner_join(
         val_lvl12_th |>
-            dplyr::group_by(H12ID) |>
+            dplyr::group_by(H12_ID) |>
             dplyr::summarise(
                 theobald = mean(cum_threat2020.02.18, na.rm = TRUE)
             )
     )
 utils::write.csv(val_lvl12, "inst/extdata/val_lvl12.csv")
 
+
+# Prepare master data frame

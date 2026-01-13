@@ -2,16 +2,28 @@
 % Please edit documentation in R/read.R
 \name{wq_prepare_data}
 \alias{wq_prepare_data}
-\title{Read data}
+\title{Read data used in the analysis}
 \usage{
 wq_prepare_data(
   type = c("water_chemistry", "hydrobasins_sites", "hydrobasins_lvl07",
-    "hydrobasins_lvl12")
+    "hydrobasins_lvl12", "val_lvl07", "val_lvl12")
 )
 }
 \arguments{
-\item{type}{data type.}
+\item{type}{character. Type of data to read. One of:
+\itemize{
+\item \code{"water_chemistry"}: Water chemistry data from 2015-2024 as SpatVector
+\item \code{"hydrobasins_sites"}: Site-level hydrobasins polygons as SpatVector
+\item \code{"hydrobasins_lvl07"}: Level 7 hydrobasins polygons as SpatVector
+\item \code{"hydrobasins_lvl12"}: Level 12 hydrobasins polygons as SpatVector
+\item \code{"val_lvl07"}: Cumulative threats for level 7 hydrobasins as data frame
+\item \code{"val_lvl12"}: Cumulative threats for level 12 hydrobasins as data frame
+}}
+}
+\value{
+For spatial data types (water_chemistry, hydrobasins_\emph{), returns a
+SpatVector object. For zonal statistics (val_lvl}), returns a data frame.
 }
 \description{
-Read data
+Read data used in the analysis
 }

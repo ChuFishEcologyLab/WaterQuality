@@ -1,9 +1,18 @@
-#' Read data
+#' Read data used in the analysis
 #'
-#' @param type data type.
+#' @param type character. Type of data to read. One of:
+#' - `"water_chemistry"`: Water chemistry data from 2015-2024 as SpatVector
+#' - `"hydrobasins_sites"`: Site-level hydrobasins polygons as SpatVector
+#' - `"hydrobasins_lvl07"`: Level 7 hydrobasins polygons as SpatVector
+#' - `"hydrobasins_lvl12"`: Level 12 hydrobasins polygons as SpatVector
+#' - `"val_lvl07"`: Cumulative threats for level 7 hydrobasins as data frame
+#' - `"val_lvl12"`: Cumulative threats for level 12 hydrobasins as data frame
+#'
+#' @return For spatial data types (water_chemistry, hydrobasins_*), returns a
+#'   SpatVector object. For zonal statistics (val_lvl*), returns a data frame.
 #'
 #' @export
-wq_prepare_data <- function(type = c("water_chemistry", "hydrobasins_sites", "hydrobasins_lvl07", "hydrobasins_lvl12")) {
+wq_prepare_data <- function(type = c("water_chemistry", "hydrobasins_sites", "hydrobasins_lvl07", "hydrobasins_lvl12", "val_lvl07", "val_lvl12")) {
   type <- match.arg(type)
   switch(type,
     water_chemistry = path_input_data("water_chemistry_2025.csv") |>
@@ -14,11 +23,20 @@ wq_prepare_data <- function(type = c("water_chemistry", "hydrobasins_sites", "hy
       ) |>
       terra::vect(geom = c("longitude", "latitude")),
     hydrobasins_sites = path_input_data("hydrobasins_sites.gpkg") |>
-      terra::vect(),
+      terra::vect() |>
+      janitor::clean_names(),
     hydrobasins_lvl07 = path_input_data("hydrobasins_lvl07.gpkg") |>
-      terra::vect(),
+      terra::vect() |>
+      janitor::clean_names(),
     hydrobasins_lvl12 = path_input_data("hydrobasins_lvl12.gpkg") |>
-      terra::vect(),
+      terra::vect() |>
+      janitor::clean_names(),
+    val_lvl07 = path_input_data("val_lvl07.csv") |>
+      utils::read.csv() |>
+      janitor::clean_names(),
+    val_lvl12 = path_input_data("val_lvl12.csv") |>
+      utils::read.csv() |>
+      janitor::clean_names(),
     cli::cli_abort("Unknown data type")
   )
 }
