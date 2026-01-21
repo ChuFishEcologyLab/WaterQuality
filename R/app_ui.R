@@ -9,47 +9,39 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     fluidPage(
       titlePanel("Water Quality Logistic Regression Explorer"),
-
       sidebarLayout(
         sidebarPanel(
           width = 3,
           h4("Model Specification"),
-
           selectInput(
             "response_var",
             "Response Variable (Y):",
             choices = NULL
           ),
-
           selectInput(
             "predictor_vars",
             "Predictor Variables (X):",
             choices = NULL,
             multiple = TRUE
           ),
-
           checkboxInput(
             "include_intercept",
             "Include Intercept",
             value = TRUE
           ),
-
           actionButton(
             "run_model",
             "Run Logistic Regression",
             class = "btn-primary",
             width = "100%"
           ),
-
           hr(),
-
           downloadButton(
             "download_results",
             "Download Results",
             width = "100%"
           )
         ),
-
         mainPanel(
           width = 9,
           tabsetPanel(

@@ -13,8 +13,8 @@
 #' @importFrom golem with_golem_options
 #' @importFrom stats as.formula binomial complete.cases fitted
 run_app <- function(
-    ...,
-    options.shiny = list()
+  ...,
+  options.shiny = list()
 ) {
   with_golem_options(
     app = shinyApp(

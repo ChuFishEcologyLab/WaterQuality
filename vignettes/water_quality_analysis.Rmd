@@ -148,12 +148,15 @@ head(df_wq)
 
 ```{R plot}
 library(ggplot2)
-df_wq  |> ggplot(
+df_wq |> ggplot(
   aes(x = hirsh_pearson_lvl12, y = theobald_lvl12)
-) + geom_point()
+) +
+  geom_point()
 ```
 
 
+
+## Analysis 
 
 
 # References 

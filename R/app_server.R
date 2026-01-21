@@ -5,7 +5,6 @@
 #' @import shiny
 #' @noRd
 app_server <- function(input, output, session) {
-
   # Load master data
   master_data <- reactive({
     wq_prepare_data("master_data")
@@ -61,20 +60,23 @@ app_server <- function(input, output, session) {
     }
 
     # Fit model
-    tryCatch({
-      stats::glm(
-        as.formula(formula_str),
-        data = data_clean,
-        family = binomial(link = "logit")
-      )
-    }, error = function(e) {
-      showNotification(
-        paste("Error fitting model:", e$message),
-        type = "error",
-        duration = NULL
-      )
-      NULL
-    })
+    tryCatch(
+      {
+        stats::glm(
+          as.formula(formula_str),
+          data = data_clean,
+          family = binomial(link = "logit")
+        )
+      },
+      error = function(e) {
+        showNotification(
+          paste("Error fitting model:", e$message),
+          type = "error",
+          duration = NULL
+        )
+        NULL
+      }
+    )
   })
 
   # Model summary output
@@ -84,15 +86,19 @@ app_server <- function(input, output, session) {
   })
 
   # Coefficients table
-  output$coefficients_table <- renderTable({
-    req(fitted_model())
-    model <- fitted_model()
-    coef_summary <- summary(model)$coefficients
-    coef_df <- as.data.frame(coef_summary)
-    coef_df$Variable <- rownames(coef_df)
-    coef_df <- coef_df[, c("Variable", names(coef_df)[1:4])]
-    coef_df
-  }, rownames = FALSE, digits = 4)
+  output$coefficients_table <- renderTable(
+    {
+      req(fitted_model())
+      model <- fitted_model()
+      coef_summary <- summary(model)$coefficients
+      coef_df <- as.data.frame(coef_summary)
+      coef_df$Variable <- rownames(coef_df)
+      coef_df <- coef_df[, c("Variable", names(coef_df)[1:4])]
+      coef_df
+    },
+    rownames = FALSE,
+    digits = 4
+  )
 
   # Diagnostic plots
   output$plot_residuals_fitted <- renderPlot({
