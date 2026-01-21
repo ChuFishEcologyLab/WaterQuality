@@ -38,8 +38,8 @@ wq_prepare_data <- function(type = c("water_chemistry", "hydrobasins_sites", "hy
     val_lvl12 = path_input_data("val_lvl12.csv") |>
       utils::read.csv() |>
       janitor::clean_names(),
-    master_data = path_input_data("master_dataset.csv") |>
-      utils::read.csv() |>
+    master_data = path_input_data("master_dataset.parquet") |>
+      arrow::read_parquet() |>
       janitor::clean_names(),
     cli::cli_abort("Unknown data type")
   )

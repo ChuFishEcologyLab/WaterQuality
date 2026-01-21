@@ -2,24 +2,25 @@
 title: "Water Quality Analysis"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{water_quality_analysis}
+  %\VignetteIndexEntry{Water Quality Analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: '`r system.file("references.bib", package="WaterQuality")`'
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
 
-```{r setup}
+```{r call}
 library(WaterQuality)
 ```
 
 
-# Objectif 
+# Objective
 
 Examine how water chemistry exceedances (values that are not within the range for the protection of aquatic life) varies with intensity of human activities.
 
@@ -28,8 +29,6 @@ Examine how water chemistry exceedances (values that are not within the range fo
 # Data 
 
 ##  Water chemistry data
-
-
 
 ## Methods — Water chemistry data
 
@@ -128,9 +127,33 @@ The cleaned, filtered, and aggregated dataset was exported as **WaterQuality2025
 - **Prop_fail_year** — Proportion of days in a year that failed water-quality thresholds
 
 
-### Accessing the data
+## Human pressure 
+
+- @theobald_GlobalExtent_2025
+- @hirsh-pearson_CanadasHumanFootprint_2022
 
 
-```R
-wchem <- wq_prepare_data("water_chemistry")
+## Accessing the data
+
+```{R}
+df_wq <- wq_prepare_data("master_data")
+head(df_wq)
 ```
+
+
+# Analyis 
+
+
+## Hirsh-Pearson vs Theobald 
+
+```{R plot}
+library(ggplot2)
+df_wq  |> ggplot(
+  aes(x = hirsh_pearson_lvl12, y = theobald_lvl12)
+) + geom_point()
+```
+
+
+
+
+# References 

@@ -3,3 +3,4 @@ CLAUDE.md
 .~lock*
 inst/data-raw
 inst/doc
+docs
