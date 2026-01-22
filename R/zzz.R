@@ -1,4 +1,5 @@
 #' INTERNALS
+#' @import ggplot2
 #' @noRd
 #'
 utils::globalVariables(

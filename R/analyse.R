@@ -42,6 +42,8 @@ run_analysis <- function(prepare_data = FALSE) {
     df_wq <- wq_prepare_data("master_data")
   }
 
+
+  cli::cli_h1("Running GLMs")
   ls_res <- list()
   chem_vars <- unique(df_wq$wc_variable)
   expl_vars <- c("hirsh_pearson_lvl7", "theobald_lvl7", "hirsh_pearson_lvl12", "theobald_lvl12")
@@ -49,7 +51,7 @@ run_analysis <- function(prepare_data = FALSE) {
 
   out <- expand.grid(
     stressor = chem_vars,
-    explainatory_var = expl_vars,
+    explanatory_var = expl_vars,
     response_var = resp_vars
   )
 
@@ -69,18 +71,44 @@ run_analysis <- function(prepare_data = FALSE) {
         mod <- stats::glm(
           as.formula(paste(k, "~", j)),
           data = df_tmp,
-          family = binomial(link = "logit")
+          family = stats::binomial(link = "logit")
         )
         ls_res[[paste("res", i, j, k, sep = "_")]] <- mod
         sum_mod <- summary(mod)
-        out$effect[l] <- coef(sum_mod)[2, 1]
-        out$pval[l] <- coef(sum_mod)[2, 4]
+        out$effect[l] <- stats::coef(sum_mod)[2, 1]
+        out$pval[l] <- stats::coef(sum_mod)[2, 4]
         out$expl_dev[l] <- (sum_mod$null.deviance - sum_mod$deviance) / sum_mod$null.deviance
       }
     }
   }
-  cli::cli_progress_done()
 
+  # browser()
+  # pretty puzzling
+  #   plot(
+  #     out$effect[out$response_var == "theobald_lvl12"],
+  #     out$effect[out$response_var == "hirsh_pearson_lvl12"]
+  #   )
+
+  for (i in resp_vars) {
+    out |>
+      dplyr::filter(response_var == i) |>
+      ggplot(aes(x = effect, y = stressor, color = explainatory_var)) +
+      geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+      # geom_errorbar(
+      #   aes(xmin = conf_low, xmax = conf_high),
+      #   height = 0.2,
+      #   position = pd
+      # ) +
+      geom_point(position = position_dodge(width = 0.6), size = 2) +
+      labs(
+        x = "Effect size",
+        y = NULL,
+        color = "Group"
+      ) +
+      theme_minimal()
+    dir.create("figs", showWarnings = FALSE)
+    ggsave(paste0("figs/fig_effect_", i, ".png"), dpi = 300)
+  }
 
   out
 }
