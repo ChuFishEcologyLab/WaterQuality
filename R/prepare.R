@@ -6,14 +6,26 @@
 #' - `"hydrobasins_lvl07"`: Level 7 hydrobasins polygons as SpatVector
 #' - `"hydrobasins_lvl12"`: Level 12 hydrobasins polygons as SpatVector
 #' - `"val_lvl07"`: Cumulative threats for level 7 hydrobasins as data frame
+#' - `"val_lvl07_components"`: Same as above but for the differents component of HP
 #' - `"val_lvl12"`: Cumulative threats for level 12 hydrobasins as data frame
+#' - `"val_lvl12_components"`: Same as above but for the differents component of HP
 #' - `"master_data"`: Master dataset as data frame
 #'
 #' @return For spatial data types (water_chemistry, hydrobasins_*), returns a
 #'   SpatVector object. For zonal statistics (val_lvl*), returns a data frame.
 #'
 #' @export
-wq_prepare_data <- function(type = c("water_chemistry", "hydrobasins_sites", "hydrobasins_lvl07", "hydrobasins_lvl12", "val_lvl07", "val_lvl12", "master_data")) {
+wq_prepare_data <- function(
+  type = c(
+    "water_chemistry", 
+    "hydrobasins_sites", 
+    "hydrobasins_lvl07", 
+    "hydrobasins_lvl12", 
+    "val_lvl07_components", 
+    "val_lvl12_components", 
+    "master_data"
+  )
+) {
   type <- match.arg(type)
   switch(type,
     water_chemistry = path_input_data("water_chemistry_2025.csv") |>
@@ -38,6 +50,15 @@ wq_prepare_data <- function(type = c("water_chemistry", "hydrobasins_sites", "hy
     val_lvl12 = path_input_data("val_lvl12.csv") |>
       utils::read.csv() |>
       janitor::clean_names(),
+    val_lvl07_components = path_input_data("val_lvl07_hp_components.csv") |>
+      utils::read.csv() |>
+      janitor::clean_names()  |>
+      dplyr::rename_with(~ paste0("lvl07_", .x), built:oil_gas)
+      ,
+    val_lvl12_components = path_input_data("val_lvl12_hp_components.csv") |>
+      utils::read.csv() |>
+      janitor::clean_names()  |>
+      dplyr::rename_with(~ paste0("lvl12_", .x), built:oil_gas),
     master_data = path_input_data("master_dataset.parquet") |>
       arrow::read_parquet() |>
       janitor::clean_names(),

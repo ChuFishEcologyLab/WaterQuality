@@ -1,8 +1,8 @@
 Package: WaterQuality
 Type: Package
 Title: Canadian Watersheds Qater Quality
-Date: 2025-01-21
-Version: 0.0.0.9001
+Date: 2025-02-05
+Version: 0.0.0.9002
 Authors@R: c(
     person("Cindy", "Chu", email = "Cindy.Chu@dfo-mpo.gc.ca", role = c("aut", "cre")),
     person("inSileco Inc.", comment = "https://insileco.io/", role = c("aut"))
@@ -26,6 +26,7 @@ Imports:
     shiny,
     stats,
     terra,
+    tidyselect,
     utils
 Suggests:
     knitr,
