@@ -4,10 +4,12 @@
 \alias{run_analysis}
 \title{Run analysis}
 \usage{
-run_analysis(prepare_data = FALSE)
+run_analysis(prepare_data = FALSE, plot_check = FALSE, outdir = "figs")
 }
 \arguments{
 \item{prepare_data}{A logical. Should the steps to prepare data be run?}
+
+\item{plot_check}{A logical. Should the relationships among explanatory variables be plotted?}
 }
 \description{
 Run analysis

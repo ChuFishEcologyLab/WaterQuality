@@ -17,12 +17,12 @@
 #' @export
 wq_prepare_data <- function(
   type = c(
-    "water_chemistry", 
-    "hydrobasins_sites", 
-    "hydrobasins_lvl07", 
-    "hydrobasins_lvl12", 
-    "val_lvl07_components", 
-    "val_lvl12_components", 
+    "water_chemistry",
+    "hydrobasins_sites",
+    "hydrobasins_lvl07",
+    "hydrobasins_lvl12",
+    "val_lvl07_components",
+    "val_lvl12_components",
     "master_data"
   )
 ) {
@@ -52,12 +52,11 @@ wq_prepare_data <- function(
       janitor::clean_names(),
     val_lvl07_components = path_input_data("val_lvl07_hp_components.csv") |>
       utils::read.csv() |>
-      janitor::clean_names()  |>
-      dplyr::rename_with(~ paste0("lvl07_", .x), built:oil_gas)
-      ,
+      janitor::clean_names() |>
+      dplyr::rename_with(~ paste0("lvl07_", .x), built:oil_gas),
     val_lvl12_components = path_input_data("val_lvl12_hp_components.csv") |>
       utils::read.csv() |>
-      janitor::clean_names()  |>
+      janitor::clean_names() |>
       dplyr::rename_with(~ paste0("lvl12_", .x), built:oil_gas),
     master_data = path_input_data("master_dataset.parquet") |>
       arrow::read_parquet() |>
