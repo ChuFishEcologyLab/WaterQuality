@@ -1,8 +1,10 @@
 # Water Quality 
 
+
 ## Objective
 
-Examine how water chemistry exceedances (values that are not within the range for the protection of aquatic life) varies with intensity of human activities
+Examine how water chemistry exceedances (values that are not within the range for the protection of aquatic life) varies with intensity of human activities.
+
 
 ## Data
 
@@ -22,12 +24,25 @@ remotes::install_github("ChuFishEcologyLab/WaterQuality")
 pak::pak("ChuFishEcologyLab/WaterQuality")
 ```
 
-⚠️ Some steps in the data preparation were done on raw data that are to large 
+⚠️ Some steps in the data preparation were done on raw data that are too large 
 to be added in the repository. The datasets are available online and listed above.  
+
+
+### Accessing data 
+
+```R
+wq_prepare_data("master_data")
+```
+
+
+
+
+## Report 
+
+
 
 
 ## TODO 
 
-- [ ] extract for all features in Hirsh-Pearson.
 - [ ] do all logistic regression for all stressor at different level of watershed and the different thresholds.
 - [ ] generate report. 

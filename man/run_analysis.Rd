@@ -2,15 +2,22 @@
 % Please edit documentation in R/analyse.R
 \name{run_analysis}
 \alias{run_analysis}
-\title{Run analysis}
+\title{Run analysis using Hirsh-Pearson and Theobald cumulative threats}
 \usage{
-run_analysis(prepare_data = FALSE, plot_check = FALSE, outdir = "figs")
+run_analysis(prepare_data = FALSE, outdir = "figs")
 }
 \arguments{
 \item{prepare_data}{A logical. Should the steps to prepare data be run?}
 
-\item{plot_check}{A logical. Should the relationships among explanatory variables be plotted?}
+\item{outdir}{Output directory (where figures are saved).}
+}
+\value{
+A data frame with one row per stressor/explanatory/response
+combination, including effect size, p-value, confidence interval, and
+explained deviance.
 }
 \description{
-Run analysis
+Fits logistic regressions (GLMs) for each water chemistry parameter against
+cumulative threat indices (Hirsh-Pearson and Theobald) at hydrobasin levels
+7 and 12. Produces effect-size plots and regression plots.
 }

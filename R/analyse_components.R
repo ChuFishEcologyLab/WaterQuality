@@ -1,6 +1,16 @@
-#' Run analysis
+#' Run analysis for individual Hirsh-Pearson threat components
+#'
+#' Fits logistic regressions (GLMs) for each water chemistry parameter against
+#' individual Hirsh-Pearson threat components (e.g. forestry, mining) at
+#' hydrobasin levels 7 and 12. Produces effect-size plots per level and
+#' response variable.
 #'
 #' @param prepare_data A logical. Should the steps to prepare data be run?
+#'
+#' @return A data frame with one row per stressor/explanatory/response
+#'   combination, including effect size, p-value, confidence interval, and
+#'   explained deviance.
+#'
 #' @export
 #'
 run_analysis_components <- function(prepare_data = FALSE) {
@@ -46,7 +56,7 @@ run_analysis_components <- function(prepare_data = FALSE) {
 
   out <- expand.grid(
     stressor = chem_vars,
-    explanatory_var = expl_vars[!grepl("built|oil|dam", expl_vars)], #expl_vars,
+    explanatory_var = expl_vars[!grepl("built|oil|dam", expl_vars)], # expl_vars,
     response_var = resp_vars
   )
 
@@ -59,32 +69,32 @@ run_analysis_components <- function(prepare_data = FALSE) {
 
   cli::cli_progress_bar("GLMs", total = nrow(out))
   l <- 0
-    for (r in seq_len(nrow(out))) {
-      l <- l + 1
-      i <- out$stressor[r]
-      j <- out$explanatory_var[r]
-      k <- out$response_var[r]
-      df_tmp <- df_wq |>
-        dplyr::filter(wc_variable == {{ i }})
-      fml <- as.formula(paste(k, "~", j))
-      cli::cli_alert_info("Variable: {i}, Formula: {fml  |> deparse()}")
-      mod <- stats::glm(
-        fml,
-        data = df_tmp,
-        family = stats::binomial(link = "logit")
-      )
-      ls_res[[paste("res", i, j, k, sep = "_")]] <- mod
-      sum_mod <- summary(mod)
-      out$effect[l] <- stats::coef(sum_mod)[2, 1]
-      out$pval[l] <- stats::coef(sum_mod)[2, 4]
-      out$pval_signif[l] <- out$pval[l] < 1e-3
-      out$pval_shape[l] <- 19 + out$pval_signif[l] * 2
-      suppressMessages(conf_int <- stats::confint(mod))
-      out$conf_low[l] <- conf_int[2, 1]
-      out$conf_high[l] <- conf_int[2, 2]
-      out$expl_dev[l] <- (sum_mod$null.deviance - sum_mod$deviance) / sum_mod$null.deviance
-      cli::cli_progress_update()
-    }
+  for (r in seq_len(nrow(out))) {
+    l <- l + 1
+    i <- out$stressor[r]
+    j <- out$explanatory_var[r]
+    k <- out$response_var[r]
+    df_tmp <- df_wq |>
+      dplyr::filter(wc_variable == {{ i }})
+    fml <- as.formula(paste(k, "~", j))
+    cli::cli_alert_info("Variable: {i}, Formula: {fml  |> deparse()}")
+    mod <- stats::glm(
+      fml,
+      data = df_tmp,
+      family = stats::binomial(link = "logit")
+    )
+    ls_res[[paste("res", i, j, k, sep = "_")]] <- mod
+    sum_mod <- summary(mod)
+    out$effect[l] <- stats::coef(sum_mod)[2, 1]
+    out$pval[l] <- stats::coef(sum_mod)[2, 4]
+    out$pval_signif[l] <- out$pval[l] < 1e-3
+    out$pval_shape[l] <- 19 + out$pval_signif[l] * 2
+    suppressMessages(conf_int <- stats::confint(mod))
+    out$conf_low[l] <- conf_int[2, 1]
+    out$conf_high[l] <- conf_int[2, 2]
+    out$expl_dev[l] <- (sum_mod$null.deviance - sum_mod$deviance) / sum_mod$null.deviance
+    cli::cli_progress_update()
+  }
 
 
   pd <- position_dodge(width = 0.6)

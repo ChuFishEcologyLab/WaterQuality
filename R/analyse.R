@@ -1,64 +1,26 @@
-#' Run analysis
+#' Run analysis using Hirsh-Pearson and Theobald cumulative threats
+#'
+#' Fits logistic regressions (GLMs) for each water chemistry parameter against
+#' cumulative threat indices (Hirsh-Pearson and Theobald) at hydrobasin levels
+#' 7 and 12. Produces effect-size plots and regression plots.
 #'
 #' @param prepare_data A logical. Should the steps to prepare data be run?
-#' @param plot_check A logical. Should the relationships among explanatory variables be plotted?
+#' @param outdir Output directory (where figures are saved).
+#'
+#' @return A data frame with one row per stressor/explanatory/response
+#'   combination, including effect size, p-value, confidence interval, and
+#'   explained deviance.
+#'
+#' @import ggplot2 patchwork
 #' @export
 #'
-run_analysis <- function(prepare_data = FALSE, plot_check = FALSE, outdir = "figs") {
+run_analysis <- function(prepare_data = FALSE, outdir = "figs") {
   if (prepare_data) {
-    cli::cli_h1("Preparing master data frame")
-
-    cli::cli_h2("Reading data")
-    ct_07 <- wq_prepare_data("val_lvl07")
-    ct_12 <- wq_prepare_data("val_lvl12")
-    st <- wq_prepare_data("hydrobasins_sites")
-    wc <- wq_prepare_data("water_chemistry")
-
-    cli::cli_h2("Joining data frames")
-    df_wq <- wc |>
-      as.data.frame() |>
-      dplyr::inner_join(
-        st |> as.data.frame(),
-        by = dplyr::join_by(lj_site_id)
-      ) |>
-      dplyr::inner_join(
-        ct_07 |>
-          as.data.frame() |>
-          dplyr::rename(
-            hirsh_pearson_lvl7 = hirsh_pearson,
-            theobald_lvl7 = theobald
-          ),
-        by = dplyr::join_by(h7_id)
-      ) |>
-      dplyr::inner_join(
-        ct_12 |>
-          as.data.frame() |>
-          dplyr::rename(
-            hirsh_pearson_lvl12 = hirsh_pearson,
-            theobald_lvl12 = theobald
-          ),
-        by = dplyr::join_by(h12_id)
-      )
+    # included for reproducibility sake
+    df_wq <- prepare_master_data()
   } else {
     df_wq <- wq_prepare_data("master_data")
   }
-
-  if (plot_check) {
-    cli::cli_alert_info("Saving check plots")
-    dir.create(outdir, showWarnings = FALSE)
-    df_wq |>
-      ggplot(aes(x = hirsh_pearson_lvl7, y = theobald_lvl7)) +
-      geom_point() +
-      labs(x = "Hisrsh-Pearson level 7", y = "Theobald level 7")
-    ggsave(file.path(outdir, "fig_explain_lvl7_.png"), height = 7, width = 9, dpi = 300)
-
-    df_wq |>
-      ggplot(aes(x = hirsh_pearson_lvl12, y = theobald_lvl12)) +
-      geom_point() +
-      labs(x = "Hisrsh-Pearson level 12", y = "Theobald level 12")
-    ggsave(file.path(outdir, "fig_explain_lvl12_.png"), height = 7, width = 9, dpi = 300)
-  }
-
 
   df_wq <- df_wq |>
     dplyr::mutate(

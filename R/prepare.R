@@ -1,4 +1,6 @@
-#' Read data used in the analysis
+#' Prepare data for the analysis
+#'
+#' Ease the access of data by reading files and doing a bit of formatting.
 #'
 #' @param type character. Type of data to read. One of:
 #' - `"water_chemistry"`: Water chemistry data from 2015-2024 as SpatVector
@@ -6,13 +8,18 @@
 #' - `"hydrobasins_lvl07"`: Level 7 hydrobasins polygons as SpatVector
 #' - `"hydrobasins_lvl12"`: Level 12 hydrobasins polygons as SpatVector
 #' - `"val_lvl07"`: Cumulative threats for level 7 hydrobasins as data frame
-#' - `"val_lvl07_components"`: Same as above but for the differents component of HP
+#' - `"val_lvl07_components"`: Same as above but for the different components of HP
 #' - `"val_lvl12"`: Cumulative threats for level 12 hydrobasins as data frame
-#' - `"val_lvl12_components"`: Same as above but for the differents component of HP
-#' - `"master_data"`: Master dataset as data frame
+#' - `"val_lvl12_components"`: Same as above but for the different components of HP
+#' - `"master_data"`: Master dataset as data frame, contains all data.
 #'
 #' @return For spatial data types (water_chemistry, hydrobasins_*), returns a
 #'   SpatVector object. For zonal statistics (val_lvl*), returns a data frame.
+#'
+#' @examples
+#' \dontrun{
+#' wq_prepare_data("master_data")
+#' }
 #'
 #' @export
 wq_prepare_data <- function(
@@ -21,7 +28,9 @@ wq_prepare_data <- function(
     "hydrobasins_sites",
     "hydrobasins_lvl07",
     "hydrobasins_lvl12",
+    "val_lvl07",
     "val_lvl07_components",
+    "val_lvl12",
     "val_lvl12_components",
     "master_data"
   )
@@ -72,12 +81,52 @@ path_input_data <- function(filename) {
   fs::path_package("WaterQuality", "extdata", filename)
 }
 
+#' @noRd
 path_output_data <- function(filename) {
   fs::dir_create("output_data")
   fs::path("output_data", filename)
 }
 
+#' @noRd
 path_output_fig <- function(filename) {
   fs::dir_create("figs/v2")
   fs::path("figs/v2", filename)
+}
+
+
+#' @noRd
+prepare_master_data <- function() {
+  cli::cli_h1("Preparing master data frame")
+
+  cli::cli_h2("Reading data")
+  ct_07 <- wq_prepare_data("val_lvl07")
+  ct_12 <- wq_prepare_data("val_lvl12")
+  st <- wq_prepare_data("hydrobasins_sites")
+  wc <- wq_prepare_data("water_chemistry")
+
+  cli::cli_h2("Joining data frames")
+  wc |>
+    as.data.frame() |>
+    dplyr::inner_join(
+      st |> as.data.frame(),
+      by = dplyr::join_by(lj_site_id)
+    ) |>
+    dplyr::inner_join(
+      ct_07 |>
+        as.data.frame() |>
+        dplyr::rename(
+          hirsh_pearson_lvl7 = hirsh_pearson,
+          theobald_lvl7 = theobald
+        ),
+      by = dplyr::join_by(h7_id)
+    ) |>
+    dplyr::inner_join(
+      ct_12 |>
+        as.data.frame() |>
+        dplyr::rename(
+          hirsh_pearson_lvl12 = hirsh_pearson,
+          theobald_lvl12 = theobald
+        ),
+      by = dplyr::join_by(h12_id)
+    )
 }

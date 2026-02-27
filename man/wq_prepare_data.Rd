@@ -2,11 +2,12 @@
 % Please edit documentation in R/prepare.R
 \name{wq_prepare_data}
 \alias{wq_prepare_data}
-\title{Read data used in the analysis}
+\title{Prepare data for the analysis}
 \usage{
 wq_prepare_data(
   type = c("water_chemistry", "hydrobasins_sites", "hydrobasins_lvl07",
-    "hydrobasins_lvl12", "val_lvl07_components", "val_lvl12_components", "master_data")
+    "hydrobasins_lvl12", "val_lvl07", "val_lvl07_components", "val_lvl12",
+    "val_lvl12_components", "master_data")
 )
 }
 \arguments{
@@ -17,10 +18,10 @@ wq_prepare_data(
 \item \code{"hydrobasins_lvl07"}: Level 7 hydrobasins polygons as SpatVector
 \item \code{"hydrobasins_lvl12"}: Level 12 hydrobasins polygons as SpatVector
 \item \code{"val_lvl07"}: Cumulative threats for level 7 hydrobasins as data frame
-\item \code{"val_lvl07_components"}: Same as above but for the differents component of HP
+\item \code{"val_lvl07_components"}: Same as above but for the different components of HP
 \item \code{"val_lvl12"}: Cumulative threats for level 12 hydrobasins as data frame
-\item \code{"val_lvl12_components"}: Same as above but for the differents component of HP
-\item \code{"master_data"}: Master dataset as data frame
+\item \code{"val_lvl12_components"}: Same as above but for the different components of HP
+\item \code{"master_data"}: Master dataset as data frame, contains all data.
 }}
 }
 \value{
@@ -28,5 +29,11 @@ For spatial data types (water_chemistry, hydrobasins_\emph{), returns a
 SpatVector object. For zonal statistics (val_lvl}), returns a data frame.
 }
 \description{
-Read data used in the analysis
+Ease the access of data by reading files and doing a bit of formatting.
+}
+\examples{
+\dontrun{
+wq_prepare_data("master_data")
+}
+
 }

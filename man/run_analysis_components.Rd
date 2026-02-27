@@ -2,13 +2,21 @@
 % Please edit documentation in R/analyse_components.R
 \name{run_analysis_components}
 \alias{run_analysis_components}
-\title{Run analysis}
+\title{Run analysis for individual Hirsh-Pearson threat components}
 \usage{
 run_analysis_components(prepare_data = FALSE)
 }
 \arguments{
 \item{prepare_data}{A logical. Should the steps to prepare data be run?}
 }
+\value{
+A data frame with one row per stressor/explanatory/response
+combination, including effect size, p-value, confidence interval, and
+explained deviance.
+}
 \description{
-Run analysis
+Fits logistic regressions (GLMs) for each water chemistry parameter against
+individual Hirsh-Pearson threat components (e.g. forestry, mining) at
+hydrobasin levels 7 and 12. Produces effect-size plots per level and
+response variable.
 }
