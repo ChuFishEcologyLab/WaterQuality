@@ -5,7 +5,7 @@
 #' 7 and 12. Produces effect-size plots and regression plots.
 #'
 #' @param prepare_data A logical. Should the steps to prepare data be run?
-#' @param outdir Output directory (where figures are saved).
+#' @param outdir Output directory (where figures and csv of results are saved).
 #'
 #' @return A data frame with one row per stressor/explanatory/response
 #'   combination, including effect size, p-value, confidence interval, and
@@ -24,24 +24,21 @@ run_analysis <- function(prepare_data = FALSE, outdir = "figs") {
 
   df_wq <- df_wq |>
     dplyr::mutate(
-      hirsh_pearson_lvl7_scaled = scale(hirsh_pearson_lvl7),
-      theobald_lvl7_scaled = scale(theobald_lvl7),
-      hirsh_pearson_lvl12_scaled = scale(hirsh_pearson_lvl12),
-      theobald_lvl12_scaled = scale(theobald_lvl12)
+      hirsh_pearson_lvl7 = scale(hirsh_pearson_lvl7),
+      theobald_lvl7 = scale(theobald_lvl7),
+      hirsh_pearson_lvl12 = scale(hirsh_pearson_lvl12),
+      theobald_lvl12 = scale(theobald_lvl12)
     )
 
 
   cli::cli_h1("Running GLMs")
   ls_res <- list()
   chem_vars <- unique(df_wq$wc_variable)
-  expl_vars <- paste0(
-    c(
-      "hirsh_pearson_lvl7",
-      "theobald_lvl7",
-      "hirsh_pearson_lvl12",
-      "theobald_lvl12"
-    ),
-    "_scaled"
+  expl_vars <- c(
+    "hirsh_pearson_lvl7",
+    "theobald_lvl7",
+    "hirsh_pearson_lvl12",
+    "theobald_lvl12"
   )
   resp_vars <- c("thr_day", "thr_month", "thr_year")
 
@@ -117,13 +114,16 @@ run_analysis <- function(prepare_data = FALSE, outdir = "figs") {
     ggsave(file.path(outdir, paste0("/fig_effect_", i, ".png")), height = 7, width = 9, dpi = 300)
   }
 
-  # adding regression plot
+  # adding regression plots
   cli::cli_alert_info("Ploting regressions")
   p <- df_wq |>
     dplyr::filter(
       wc_variable %in% c("Dissolved_Oxygen", "Nitrate", "Total_Dissolved_Solids", "Dissolved_Chloride")
     ) |>
-    ggplot(aes(x = hirsh_pearson_lvl12_scaled, y = thr_year)) +
+    dplyr::mutate(
+      wc_variable = gsub("_", " ", wc_variable)
+    ) |>
+    ggplot(aes(x = hirsh_pearson_lvl12, y = thr_year)) +
     geom_point(alpha = 0.5) + # Add the raw data points
     stat_smooth(
       method = "glm",
@@ -132,15 +132,21 @@ run_analysis <- function(prepare_data = FALSE, outdir = "figs") {
       color = "#8c21c6",
       linetype = "solid"
     ) +
-    ylab("Probability (0/1)") + # Label the y-axis
+    labs(
+      x = "Hirsh-Pearson cumulative threat (scaled)",
+      y = "Threshold exceedance (observed and predicted)"
+    ) + # Label the y-axis
     facet_wrap(vars(wc_variable))
   ggsave(file.path(outdir, "fig_regression_hirsh.png"), height = 14, width = 18, dpi = 300)
 
   p <- df_wq |>
+    dplyr::mutate(
+      wc_variable = gsub("_", " ", wc_variable)
+    ) |>
     dplyr::filter(
       wc_variable %in% c("Dissolved_Oxygen", "Nitrate", "Total_Dissolved_Solids", "Dissolved_Chloride")
     ) |>
-    ggplot(aes(x = theobald_lvl12_scaled, y = thr_year)) +
+    ggplot(aes(x = theobald_lvl12, y = thr_year)) +
     geom_point(alpha = 0.5) + # Add the raw data points
     stat_smooth(
       method = "glm",
@@ -149,7 +155,10 @@ run_analysis <- function(prepare_data = FALSE, outdir = "figs") {
       color = "#8c21c6",
       linetype = "solid"
     ) +
-    ylab("Probability (0/1)") + # Label the y-axis
+    labs(
+      x = "Hirsh-Pearson cumulative threat (scaled)",
+      y = "Threshold exceedance (observed and predicted)"
+    ) +
     facet_wrap(vars(wc_variable))
   ggsave(file.path(outdir, "fig_regression_theobald.png"), height = 14, width = 18, dpi = 300)
 

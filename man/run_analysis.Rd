@@ -9,7 +9,7 @@ run_analysis(prepare_data = FALSE, outdir = "figs")
 \arguments{
 \item{prepare_data}{A logical. Should the steps to prepare data be run?}
 
-\item{outdir}{Output directory (where figures are saved).}
+\item{outdir}{Output directory (where figures and csv of results are saved).}
 }
 \value{
 A data frame with one row per stressor/explanatory/response

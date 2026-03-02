@@ -87,11 +87,6 @@ path_output_data <- function(filename) {
   fs::path("output_data", filename)
 }
 
-#' @noRd
-path_output_fig <- function(filename) {
-  fs::dir_create("figs/v2")
-  fs::path("figs/v2", filename)
-}
 
 
 #' @noRd

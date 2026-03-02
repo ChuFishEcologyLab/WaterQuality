@@ -13,6 +13,9 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+path_results <- function(filename) {
+  fs::path_package("WaterQuality", "results", filename)
+}
 ```
 
 ```{r call}
@@ -36,7 +39,7 @@ Examine how water chemistry exceedances (values that are not within the range fo
 
 References
 
-Surface-water chemistry data were compiled from two national databases: **CICADA** and **DataStream**. DataStream records were downloaded for five Canadian regions (Pacific, Mackenzie, Lake Winnipeg, Great Lakes, and Atlantic) using the Explore Data → Custom Download tool, selecting lake/pond, river/stream, wetland, reservoir, and spring sites, and filtering to field-collected surface-water samples from 2015–2024. Variables included conductivity, dissolved chloride, dissolved oxygen, nitrate, pH, total dissolved solids, total phosphorus, turbidity, and several additional analytes.
+Surface-water chemistry data were compiled from two national databases: **CICADA** and **DataStream**. DataStream records were downloaded for five Canadian regions (Pacific, Mackenzie, Lake Winnipeg, Great Lakes, and Atlantic) using the Explore Data → Custom Download tool, selecting lake/pond, river/stream, wetland, reservoir, and spring sites, and filtering to field-collected surface-water samples from 2015-2024. Variables included conductivity, dissolved chloride, dissolved oxygen, nitrate, pH, total dissolved solids, total phosphorus, turbidity, and several additional analytes.
 
 CICADA data were obtained from the file *Nat_WQ_data_0_10_2023_v2.csv* and similarly filtered to samples from 2015 onward.
 
@@ -55,12 +58,12 @@ Implausible and erroneous values were removed prior to analysis. Thresholds for 
 
 ### Filtering for CCME guideline compliance
 
-To meet the minimum data requirements of the **Canadian Council of Ministers of the Environment (CCME)** guidelines for the protection of aquatic life, data were filtered so that each site–variable combination had:
+To meet the minimum data requirements of the **Canadian Council of Ministers of the Environment (CCME)** guidelines for the protection of aquatic life, data were filtered so that each site-variable combination had:
 
 1. **≥10 sampled days per year**, and
 2. **≥3 years of data** (not necessarily consecutive) between 2015 and 2024.
 
-Daily means were first calculated for each site, variable, and date to account for multiple samples taken on the same day. Sample days and months were counted for each site–variable–year combination, and sites not meeting the CCME minimum sampling density were excluded. Site–variable combinations with fewer than three total years of data were also removed.
+Daily means were first calculated for each site, variable, and date to account for multiple samples taken on the same day. Sample days and months were counted for each site-variable-year combination, and sites not meeting the CCME minimum sampling density were excluded. Site-variable combinations with fewer than three total years of data were also removed.
 
 
 ### Temporal aggregation
@@ -82,14 +85,14 @@ For each variable, daily, monthly, and yearly mean values were compared to guide
 | Dissolved chloride     | < 120 mg/L   |
 | Dissolved oxygen       | > 6.5 mg/L   |
 | Nitrate                | < 3 mg NO₃/L |
-| pH                     | 6.5–9.0      |
+| pH                     | 6.5-9.0      |
 | Total phosphorus       | < 30 µg/L    |
 | Total dissolved solids | < 500 mg/L   |
 | Turbidity              | < 10 NTU     |
 
 Variables that did not meet minimum data requirements (ammonia, nitrite, total suspended solids, and selenium) were excluded from the final dataset.
 
-For each site–variable–year, the **proportion of failed days** was calculated as the fraction of daily means exceeding guideline thresholds.
+For each site-variable-year, the **proportion of failed days** was calculated as the fraction of daily means exceeding guideline thresholds.
 
 
 ### Final dataset
@@ -127,36 +130,50 @@ The cleaned, filtered, and aggregated dataset was exported as **WaterQuality2025
 - **Prop_fail_year** — Proportion of days in a year that failed water-quality thresholds
 
 
-## Human pressure 
 
-- @theobald_GlobalExtent_2025
-- @hirsh-pearson_CanadasHumanFootprint_2022
+## Human footprint datasets
 
+Two human footprint datasets were used in the analysis. The first is the *Human Activities* dataset from @hirsh-pearson_CanadasHumanFootprint_2022, hereafter referred to as the “Hirsh-Pearson” dataset. The dataset is available on Borealis ([https://doi.org/10.5683/SP2/EVKAVL](https://doi.org/10.5683/SP2/EVKAVL)). The cumulative threat map included in this dataset represents the combination of twelve anthropogenic pressures (hereafter referred to as components).
 
-## Accessing the data
+The second dataset is the *Global Human Modification of Terrestrial Ecosystems (2022)* from @theobald_GlobalExtent_2025, available on Zenodo ([https://zenodo.org/records/14502573](https://zenodo.org/records/14502573)). We used the “AA” layer (all threats combined) and refer to this dataset as “Theobald.”
+
+Both datasets are raster files. Values were extracted for hydrobasins defined by @lehner_GlobalRiver_2013, available from HydroSHEDS ([https://www.hydrosheds.org/products/hydrobasins](https://www.hydrosheds.org/products/hydrobasins)). We used HydroBASINS levels 7 and 12 for the analysis.
+
+Correlation analyses between the two datasets yielded coefficients of 0.981 at level 7 and 0.967 at level 12. These high correlations indicate that either dataset can serve as a proxy for human footprint in DFO analyses, with minimal influence on overall conclusions.
+
 
 ```{R}
-df_wq <- wq_prepare_data("master_data")
-head(df_wq)
-```
-
-
-# Analyis 
-
-
-## Hirsh-Pearson vs Theobald 
-
-```{R plot}
-library(ggplot2)
-df_wq |> ggplot(
-  aes(x = hirsh_pearson_lvl12, y = theobald_lvl12)
-) +
-  geom_point()
+knitr::include_graphics("figs/fig_theobald_vs_hirsh.png")
 ```
 
 
 
-## Analysis 
+# Statistical Analysis
+
+To examine the relationship between cumulative human footprint and water chemistry exceedances, we fitted generalized linear models (GLMs) with a binomial error distribution and a logit link function. We used the implementation of the function `glm()` available on the core package `stats` available in R version 4.5.2 [@r_v45]. Each model regressed a binary threshold exceedance indicator (pass/fail) against a scaled cumulative threat index. Exceedance indicators were evaluated at three temporal scales: daily, monthly, and yearly means. Explanatory variables were the Hirsh-Pearson and Theobald cumulative threat values extracted at HydroBASINS levels 7 and 12, standardized (centered and scaled) prior to model fitting.
+
+Models were fitted for every combination of water chemistry parameter, cumulative threat index (four combinations of dataset x hydrobasin level), and temporal exceedance scale (daily, monthly, yearly), yielding a full factorial design. We applied the same modelling approach to examine the individual components of the Hirsh-Pearson dataset (e.g., forestry, mining, agriculture), replacing the cumulative threat index with each component as the sole explanatory variable. For each model we extracted the regression coefficient (effect size) on the logit scale, its profile-likelihood 95% confidence interval, the associated p-value, and the proportion of deviance explained (calculated as the reduction in deviance relative to the null model). Statistical significance was assessed at $\alpha$ = 0.001.
+
+
+
+
+# Results 
+
+Overall, we found similar patterns for both data at all scales, and all temporal and spatial scale.  
+
+
+Results for components were less clear. 
+
+
+```{R table_res_main}
+path_results("res_main.csv") |>
+  read.csv() |>
+  dplyr::select(stressor, explanatory_var, response_var, expl_dev) |>
+  dplyr::mutate(expl_dev = 100 * expl_dev) |>
+  dplyr::arrange(stressor) |>
+  knitr::kable()
+```
+
 
 
 # References 

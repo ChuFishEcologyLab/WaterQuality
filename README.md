@@ -57,7 +57,8 @@ to be added in the repository. The datasets are available online and listed abov
 The statistical analyses can be run as follows
 
 ```R
-run_analysis()
+# a dataset with the entire set of results is returned. 
+res_main <- run_analysis()
 ```
 
 By default, figures will be saved in the folder `figs/`. 
@@ -67,7 +68,7 @@ Similarly, the analyses for the different components of the Hirsh datasets are d
 
 
 ```R
-run_analysis_components()
+res_components <- run_analysis_components()
 ```
 
 Finally, the check plot for the correlation between the two datasets is done using 
