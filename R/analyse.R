@@ -51,8 +51,7 @@ run_analysis <- function(prepare_data = FALSE, outdir = "figs") {
     response_var = resp_vars
   )
 
-  out$effect <- 0
-  out$pval <- out$pval_shape <- 0
+  out$effect <- out$pval <- out$pval_shape <- 0
   out$pval_signif <- FALSE
   out$conf_low <- out$conf_high <- 0
   out$expl_dev <- 0

@@ -28,10 +28,9 @@ plot_hirsh_vs_theobald <- function(
     scale_y_continuous(limits = ~ range(.x, 1)) +
     annotate(
       "text",
-      x = 2, y = 0.92,
+      x = 2, y = 0.96,
       label = paste("Correlation:", round(cor_07, 3))
     )
-  ggsave(file.path(outdir, "fig_explain_lvl7_.png"), height = 7, width = 9, dpi = 300)
 
   p2 <- df_wq |>
     ggplot(aes(x = hirsh_pearson_lvl12, y = theobald_lvl12)) +
@@ -44,11 +43,11 @@ plot_hirsh_vs_theobald <- function(
     ) +
     annotate(
       "text",
-      x = 2, y = 0.92,
+      x = 2, y = 0.96,
       label = paste("Correlation:", round(cor_12, 3))
     )
 
 
   p1 + p2
-  ggsave(file.path(outdir, "fig_theobald_vs_hirsh_.png"), height = 7, width = 18, dpi = 300)
+  ggsave(file.path(outdir, "fig_theobald_vs_hirsh.png"), height = 7, width = 18, dpi = 300)
 }
