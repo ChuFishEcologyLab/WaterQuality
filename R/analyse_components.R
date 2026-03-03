@@ -55,7 +55,7 @@ run_analysis_components <- function(prepare_data = FALSE, outdir = "figs") {
     k <- out$response_var[r]
     df_tmp <- df_wq |>
       dplyr::filter(wc_variable == {{ i }})
-    fml <- as.formula(paste(k, "~", j))
+    fml <- stats::as.formula(paste(k, "~", j))
     cli::cli_alert_info("Variable: {i}, Formula: {fml  |> deparse()}")
     mod <- stats::glm(
       fml,

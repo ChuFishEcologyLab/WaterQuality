@@ -1,8 +1,8 @@
 ---
-title: "Water Quality Analysis"
+title: "Water Quality Analysis Report"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Water Quality Analysis}
+  %\VignetteIndexEntry{Water Quality Analysis Report}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: '`r system.file("references.bib", package="WaterQuality")`'
@@ -45,7 +45,6 @@ Examine how water chemistry exceedances (values that are not within the range fo
 ## Methods — Water chemistry data
 
 ### Data sources
-
 
 Surface-water chemistry data were compiled from two national databases: **CICADA** and **DataStream**. DataStream records were downloaded for five Canadian regions (Pacific, Mackenzie, Lake Winnipeg, Great Lakes, and Atlantic) using the Explore Data → Custom Download tool, selecting lake/pond, river/stream, wetland, reservoir, and spring sites, and filtering to field-collected surface-water samples from 2015-2024. Variables included conductivity, dissolved chloride, dissolved oxygen, nitrate, pH, total dissolved solids, total phosphorus, turbidity, and several additional analytes.
 
@@ -139,6 +138,8 @@ The cleaned, filtered, and aggregated dataset was exported as **WaterQuality2025
 
 
 
+
+
 ## Human footprint datasets
 
 Two human footprint datasets were used in the analysis. The first is the *Human Activities* dataset from @hirsh-pearson_CanadasHumanFootprint_2022, hereafter referred to as the “Hirsh-Pearson” dataset. The dataset is available on Borealis ([https://doi.org/10.5683/SP2/EVKAVL](https://doi.org/10.5683/SP2/EVKAVL)). The cumulative threat map included in this dataset represents the combination of twelve anthropogenic pressures (hereafter referred to as components): 
@@ -158,15 +159,14 @@ Two human footprint datasets were used in the analysis. The first is the *Human 
 
 [1]: https://www.researchgate.net/publication/359937074_Canada%27s_human_footprint_reveals_large_intact_areas_juxtaposed_against_areas_under_immense_anthropogenic_pressure?utm_source=chatgpt.com "(PDF) Canada's human footprint reveals large intact areas ..."
 
-
-The second dataset is the *Global Human Modification of Terrestrial Ecosystems (2022)* from @theobald_GlobalExtent_2025, available on Zenodo ([https://zenodo.org/records/14502573](https://zenodo.org/records/14502573)). We used the “AA” layer (all threats combined) and refer to this dataset as “Theobald.”
+The second dataset is the *Global Human Modification of Terrestrial Ecosystems (2022)* from @theobald_GlobalExtent_2025, available on Zenodo ([https://zenodo.org/records/14502573](https://zenodo.org/records/14502573)). We used the “AA” layer (all threats combined) and refer to this dataset as “Theobald”.
 
 Both datasets are raster files. Values were extracted for hydrobasins defined by @lehner_GlobalRiver_2013, available from HydroSHEDS ([https://www.hydrosheds.org/products/hydrobasins](https://www.hydrosheds.org/products/hydrobasins)). We used HydroBASINS levels 7 and 12 for the analysis.
 
 Correlation analyses between the two datasets yielded coefficients of 0.981 at level 7 and 0.967 at level 12. These high correlations indicate that either dataset can serve as a proxy for human footprint in DFO analyses, with minimal influence on overall conclusions.
 
 
-```{R, fig.cap="Comparison between the cumuative threat values of the Hirsh-Pearson and the Theobald datasets."}
+```{R, fig.cap="Figure 1 - Comparison between the cumuative threat values of the Hirsh-Pearson and the Theobald datasets."}
 knitr::include_graphics("figs/fig_theobald_vs_hirsh.png")
 ```
 
@@ -183,34 +183,34 @@ Models were fitted for every combination of water chemistry parameter, cumulativ
 
 # Results 
 
-Overall, results obtained with the two cumulative datasets were highly consistent across temporal (daily, monthly, yearly) and spatial scales (HydroBASINS levels 7 and 12) (Figure 2).
+Overall, results obtained with the two cumulative threat datasets were highly consistent across temporal (daily, monthly, yearly) and spatial scales (HydroBASINS levels 7 and 12) (Figure 2).
 
-```{R, fig.cap="Effect size for the main regression models where. The role of cumulative threats (Hirsh-Pearson and Theobald) datasets in explaining the porbbaiity o execeeding gudeline is explored at two spatial sclaes (hydrobasins level 7 and level 12) for three different temporal scale: day, month and year."}
+```{R, fig.cap="Figure 2 - Effect size for the main regression models where. The role of cumulative threats (Hirsh-Pearson and Theobald) datasets in explaining the porbbaiity o execeeding gudeline is explored at two spatial sclaes (hydrobasins level 7 and level 12) for three different temporal scale: day, month and year."}
 knitr::include_graphics("figs/fig2.png")
 ```
 
-The explanatory power of cumulative threats in predicting guideline exceedance varied substantially among water-chemistry variables. The strongest effect sizes were observed for total dissolved solids (TDS), where effects were strongly negative (up to −2.77), and for dissolved chloride (1.968), where effects were strongly positive. Moderate but significant positive effects were observed for turbidity and dissolved oxygen, whereas smaller negative effects were detected for pH and nitrate. Effects were very small or non-significant for conductivity and total phosphorus.
+The explanatory power of cumulative threats in predicting guideline exceedance varied substantially among water-chemistry variables. The strongest effect sizes were observed for total dissolved solids (TDS), where effects were strongly negative (up to −2.77), and for dissolved chloride, where effects were strongly positive (up to 1.97), see Table. Moderate but significant positive effects were observed for turbidity and dissolved oxygen, whereas smaller negative effects were detected for pH and nitrate. Effects were very small or non-significant for conductivity and total phosphorus.
 
 Except for TDS (up to 15.08) and dissolved chloride (up to 40.93%), the percentage of deviance explained by the models was generally low.
 
 
-```{R, fig.cap="Example of regression plots using the Theobald dataset and hydrobasings level 12"}
+```{R, fig.cap="Figure 3 - Example of regression plots using the Theobald dataset and hydrobasings level 12"}
 knitr::include_graphics("figs/fig3.png")
 ```
 
 
-Results for the individual Hirsh-Pearson components were more difficult to interpret. Although some strong effect sizes were detected, overall model fit was low and several estimates appeared influenced by high-leverage observations. In addition, due to strong imbalance in the distribution of binary outcomes (0 vs 1), three of the twelve components had to be excluded from the analysis.
+Results for the individual Hirsh-Pearson components were more difficult to interpret (Figure 4). Although some strong effect sizes were detected, overall model fit was low and several estimates appeared influenced by high-leverage observations. In addition, due to strong imbalance in the distribution of binary outcomes (0 vs 1), three of the twelve components had to be excluded from the analysis.
 
 
 
-```{R, fig.cap="Same Figure as Figure 2 for all components of the Hirsh-Pearson datasets. Only the year scale is investigated."}
+```{R, fig.cap="Figure 4 - Same Figure as Figure 2 for all components of the Hirsh-Pearson datasets. Only the year scale is investigated."}
 knitr::include_graphics("figs/fig4.png")
 ```
 
 
 # Main table 
 
-```{R table_res_main, tab.cap = "Results for the main set of regressions."}
+```{R table_res_main, tab.cap = "Table 1 = Results for the main set of regressions."}
 path_results("res_main.csv") |>
   read.csv() |>
   dplyr::select(stressor, explanatory_var, response_var, effect, pval, expl_dev) |>
