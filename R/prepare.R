@@ -12,6 +12,7 @@
 #' - `"val_lvl12"`: Cumulative threats for level 12 hydrobasins as data frame
 #' - `"val_lvl12_components"`: Same as above but for the different components of HP
 #' - `"master_data"`: Master dataset as data frame, contains all data.
+#' - `"component_data"`: Similar to master data but add components data.
 #'
 #' @return For spatial data types (water_chemistry, hydrobasins_*), returns a
 #'   SpatVector object. For zonal statistics (val_lvl*), returns a data frame.
@@ -32,7 +33,8 @@ wq_prepare_data <- function(
     "val_lvl07_components",
     "val_lvl12",
     "val_lvl12_components",
-    "master_data"
+    "master_data",
+    "component_data"
   )
 ) {
   type <- match.arg(type)
@@ -62,12 +64,15 @@ wq_prepare_data <- function(
     val_lvl07_components = path_input_data("val_lvl07_hp_components.csv") |>
       utils::read.csv() |>
       janitor::clean_names() |>
-      dplyr::rename_with(~ paste0("lvl07_", .x), built:oil_gas),
+      dplyr::rename_with(~ paste0("lvl07_", .x), built:roads),
     val_lvl12_components = path_input_data("val_lvl12_hp_components.csv") |>
       utils::read.csv() |>
       janitor::clean_names() |>
-      dplyr::rename_with(~ paste0("lvl12_", .x), built:oil_gas),
+      dplyr::rename_with(~ paste0("lvl12_", .x), built:roads),
     master_data = path_input_data("master_dataset.parquet") |>
+      arrow::read_parquet() |>
+      janitor::clean_names(),
+    component_data = path_input_data("component_dataset.parquet") |>
       arrow::read_parquet() |>
       janitor::clean_names(),
     cli::cli_abort("Unknown data type")
@@ -124,4 +129,32 @@ prepare_master_data <- function() {
         ),
       by = dplyr::join_by(h12_id)
     )
+}
+
+
+
+#' @noRd
+prepare_component_data <- function() {
+    cli::cli_h1("Preparing data frame")
+
+    cli::cli_h2("Reading data")
+    ct_07 <- wq_prepare_data("val_lvl07_components")
+    ct_12 <- wq_prepare_data("val_lvl12_components")
+    st <- wq_prepare_data("hydrobasins_sites")
+    wc <- wq_prepare_data("water_chemistry")
+
+    cli::cli_h2("Joining data frames")
+    df_wq <- wc |>
+      as.data.frame() |>
+      dplyr::inner_join(
+        st |> as.data.frame(),
+        by = dplyr::join_by(lj_site_id)
+      ) |>
+      dplyr::inner_join(
+        ct_07
+      ) |>
+      dplyr::inner_join(
+        ct_12,
+        by = dplyr::join_by(h12_id)
+      )
 }

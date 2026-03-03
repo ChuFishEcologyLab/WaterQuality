@@ -5,7 +5,7 @@
 #' 7 and 12. Produces effect-size plots and regression plots.
 #'
 #' @param prepare_data A logical. Should the steps to prepare data be run?
-#' @param outdir Output directory (where figures and csv of results are saved).
+#' @param outdir Output directory (where figures are saved).
 #'
 #' @return A data frame with one row per stressor/explanatory/response
 #'   combination, including effect size, p-value, confidence interval, and
@@ -140,11 +140,11 @@ run_analysis <- function(prepare_data = FALSE, outdir = "figs") {
   ggsave(file.path(outdir, "fig_regression_hirsh.png"), height = 14, width = 18, dpi = 300)
 
   p <- df_wq |>
+  dplyr::filter(
+      wc_variable %in% c("Dissolved_Oxygen", "Nitrate", "Total_Dissolved_Solids", "Dissolved_Chloride")
+    ) |>
     dplyr::mutate(
       wc_variable = gsub("_", " ", wc_variable)
-    ) |>
-    dplyr::filter(
-      wc_variable %in% c("Dissolved_Oxygen", "Nitrate", "Total_Dissolved_Solids", "Dissolved_Chloride")
     ) |>
     ggplot(aes(x = theobald_lvl12, y = thr_year)) +
     geom_point(alpha = 0.5) + # Add the raw data points

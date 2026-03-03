@@ -4,10 +4,12 @@
 \alias{run_analysis_components}
 \title{Run analysis for individual Hirsh-Pearson threat components}
 \usage{
-run_analysis_components(prepare_data = FALSE)
+run_analysis_components(prepare_data = FALSE, outdir = "figs")
 }
 \arguments{
 \item{prepare_data}{A logical. Should the steps to prepare data be run?}
+
+\item{outdir}{Output directory (where figures are saved).}
 }
 \value{
 A data frame with one row per stressor/explanatory/response

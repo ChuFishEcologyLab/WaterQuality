@@ -1,6 +1,7 @@
 # inst/extdata/water_chemistry_2025.csv
 # is tab from the xlsx file exported as a csv file
 
+# Read data
 sf::read_sf(
   "inst/data-raw/3_WatershedsandWQsites/commondata/wqdata.gdb",
 ) |>
@@ -20,7 +21,7 @@ sf::read_sf(
   sf::st_write("inst/extdata/hydrobasins_lvl12.gpkg")
 
 
-# Value Extraction fron the two large datasets
+# Value Extraction fron the two large cumulatiove threat datasets
 
 wc_sites <- terra::vect("inst/extdata/hydrobasins_sites.gpkg")
 wc_lvl07 <- terra::vect("inst/extdata/hydrobasins_lvl07.gpkg")
@@ -81,15 +82,6 @@ val_lvl12 <- val_lvl12_hp |>
 utils::write.csv(val_lvl12, "inst/extdata/val_lvl12.csv", row.names = FALSE)
 
 
-# Prepare master data frame
-
-# use this is wq_prepare_data
-df_all <- run_analysis()
-
-write.csv(df_all, "inst/extdata/master_dataset.csv", row.names = FALSE)
-
-jj <- wq_prepare_data("master_data")
-plot(jj$hirsh_pearson_lvl7, jj$theobald_lvl7)
 
 
 

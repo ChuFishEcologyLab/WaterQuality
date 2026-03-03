@@ -7,7 +7,7 @@
 wq_prepare_data(
   type = c("water_chemistry", "hydrobasins_sites", "hydrobasins_lvl07",
     "hydrobasins_lvl12", "val_lvl07", "val_lvl07_components", "val_lvl12",
-    "val_lvl12_components", "master_data")
+    "val_lvl12_components", "master_data", "component_data")
 )
 }
 \arguments{
@@ -22,6 +22,7 @@ wq_prepare_data(
 \item \code{"val_lvl12"}: Cumulative threats for level 12 hydrobasins as data frame
 \item \code{"val_lvl12_components"}: Same as above but for the different components of HP
 \item \code{"master_data"}: Master dataset as data frame, contains all data.
+\item \code{"component_data"}: Similar to master data but add components data.
 }}
 }
 \value{

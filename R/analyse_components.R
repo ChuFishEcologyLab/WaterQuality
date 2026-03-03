@@ -6,52 +6,32 @@
 #' response variable.
 #'
 #' @param prepare_data A logical. Should the steps to prepare data be run?
-#'
+#' @param outdir Output directory (where figures are saved).
+#' 
 #' @return A data frame with one row per stressor/explanatory/response
 #'   combination, including effect size, p-value, confidence interval, and
 #'   explained deviance.
 #'
 #' @export
 #'
-run_analysis_components <- function(prepare_data = FALSE) {
+run_analysis_components <- function(prepare_data = FALSE, outdir = "figs") {
+
   if (prepare_data) {
-    cli::cli_h1("Preparing master data frame")
-
-    cli::cli_h2("Reading data")
-    ct_07 <- wq_prepare_data("val_lvl07_components")
-    ct_12 <- wq_prepare_data("val_lvl12_components")
-    st <- wq_prepare_data("hydrobasins_sites")
-    wc <- wq_prepare_data("water_chemistry")
-
-    cli::cli_h2("Joining data frames")
-    df_wq <- wc |>
-      as.data.frame() |>
-      dplyr::inner_join(
-        st |> as.data.frame(),
-        by = dplyr::join_by(lj_site_id)
-      ) |>
-      dplyr::inner_join(
-        ct_07
-      ) |>
-      dplyr::inner_join(
-        ct_12,
-        by = dplyr::join_by(h12_id)
-      )
+    # included for reproducibility sake
+    df_wq <- prepare_component_data()
   } else {
-    stop("Not ready yet")
-    # df_wq <- wq_prepare_data("master_data")
+    df_wq <- wq_prepare_data("component_data")
   }
 
   df_wq <- df_wq |>
-    dplyr::mutate(dplyr::across(lvl07_built:lvl12_oil_gas, scale))
+    dplyr::mutate(dplyr::across(lvl07_built:lvl12_roads, scale))
 
 
   cli::cli_h1("Running GLMs")
   ls_res <- list()
   chem_vars <- unique(df_wq$wc_variable)
-  expl_vars <- c(
-    names(ct_07)[-1], names(ct_12)[-1]
-  )
+  vc_nm <- df_wq |> names()
+  expl_vars <- vc_nm[grepl("^lvl[01][27]_.*", vc_nm)]
   resp_vars <- c("thr_day", "thr_month", "thr_year")
 
   out <- expand.grid(
@@ -121,8 +101,11 @@ run_analysis_components <- function(prepare_data = FALSE) {
           color = "Group"
         ) +
         theme_minimal()
-      dir.create("figs", showWarnings = FALSE)
-      ggsave(paste0("figs/fig_effect_components_", i, "_", j, ".png"), dpi = 300)
+      dir.create(outdir, showWarnings = FALSE)
+      ggsave(
+        file.path(outdir, paste0("fig_effect_components_", i, "_", j, ".png")), 
+        dpi = 300
+      )
     }
   }
 
