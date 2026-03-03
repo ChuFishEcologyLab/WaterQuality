@@ -5,3 +5,4 @@ inst/data-raw
 inst/doc
 docs
 figs
+!vignettes/figs

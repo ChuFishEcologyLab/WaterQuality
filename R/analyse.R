@@ -62,7 +62,7 @@ run_analysis <- function(prepare_data = FALSE, outdir = "figs") {
     k <- out$response_var[r]
     df_tmp <- df_wq |>
       dplyr::filter(wc_variable == {{ i }})
-    fml <- as.formula(paste(k, "~", j))
+    fml <- stats::as.formula(paste(k, "~", j))
     cli::cli_alert_info("Variable: {i}, Formula: {fml  |> deparse()}")
     mod <- stats::glm(
       fml,
@@ -89,6 +89,9 @@ run_analysis <- function(prepare_data = FALSE, outdir = "figs") {
       dplyr::arrange(
         stressor, explanatory_var
       ) |>
+      dplyr::mutate(
+        stressor = gsub("_", " ", stressor)
+      ) |>
       ggplot(
         aes(
           x = effect,
@@ -108,7 +111,8 @@ run_analysis <- function(prepare_data = FALSE, outdir = "figs") {
       labs(
         x = "Effect size",
         y = NULL,
-        color = "Group"
+        color = "Group",
+        title = paste("Temporal scale:", gsub("thr_", "", i))
       ) +
       theme_minimal()
     ggsave(file.path(outdir, paste0("/fig_effect_", i, ".png")), height = 7, width = 9, dpi = 300)
@@ -140,7 +144,7 @@ run_analysis <- function(prepare_data = FALSE, outdir = "figs") {
   ggsave(file.path(outdir, "fig_regression_hirsh.png"), height = 14, width = 18, dpi = 300)
 
   p <- df_wq |>
-  dplyr::filter(
+    dplyr::filter(
       wc_variable %in% c("Dissolved_Oxygen", "Nitrate", "Total_Dissolved_Solids", "Dissolved_Chloride")
     ) |>
     dplyr::mutate(
@@ -156,12 +160,11 @@ run_analysis <- function(prepare_data = FALSE, outdir = "figs") {
       linetype = "solid"
     ) +
     labs(
-      x = "Hirsh-Pearson cumulative threat (scaled)",
+      x = "Theobald cumulative threat (scaled)",
       y = "Threshold exceedance (observed and predicted)"
     ) +
     facet_wrap(vars(wc_variable))
   ggsave(file.path(outdir, "fig_regression_theobald.png"), height = 14, width = 18, dpi = 300)
-
 
   out
 }

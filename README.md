@@ -64,16 +64,30 @@ res_main <- run_analysis()
 By default, figures will be saved in the folder `figs/`. 
 
 
-Similarly, the analyses for the different components of the Hirsh datasets are done with 
+Similarly, the analyses for the different components of the Hirsh-Pearson datasets are done with 
 
 
 ```R
 res_components <- run_analysis_components()
 ```
 
-Finally, the check plot for the correlation between the two datasets is done using 
+Finally, the check plot for the correlation between the two datasets is done using
 
 ```R
 plot_hirsh_vs_theobald()
+```
+
+
+### Results
+
+All figures can be generated running the code. The output data frames of the `run_analysis*()` functions were saved as tables with results are available as CSV files in `inst/results/`, these tables includes effect sizes, p-values, confidence intervals, and deviance explained.
+
+
+### Report
+
+The package includes a small report as a vignette. To generate the `pkgdown` website (which includes the report), run:
+
+```R
+pkgdown::build_site()
 ```
 

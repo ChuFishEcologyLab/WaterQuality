@@ -7,7 +7,7 @@
 #'
 #' @param prepare_data A logical. Should the steps to prepare data be run?
 #' @param outdir Output directory (where figures are saved).
-#' 
+#'
 #' @return A data frame with one row per stressor/explanatory/response
 #'   combination, including effect size, p-value, confidence interval, and
 #'   explained deviance.
@@ -15,7 +15,6 @@
 #' @export
 #'
 run_analysis_components <- function(prepare_data = FALSE, outdir = "figs") {
-
   if (prepare_data) {
     # included for reproducibility sake
     df_wq <- prepare_component_data()
@@ -86,6 +85,9 @@ run_analysis_components <- function(prepare_data = FALSE, outdir = "figs") {
         dplyr::arrange(
           stressor, explanatory_var
         ) |>
+        dplyr::mutate(
+          stressor = gsub("_", " ", stressor)
+        ) |>
         ggplot(aes(x = effect, y = stressor, color = explanatory_var, group = explanatory_var)) +
         geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
         geom_errorbar(
@@ -103,7 +105,7 @@ run_analysis_components <- function(prepare_data = FALSE, outdir = "figs") {
         theme_minimal()
       dir.create(outdir, showWarnings = FALSE)
       ggsave(
-        file.path(outdir, paste0("fig_effect_components_", i, "_", j, ".png")), 
+        file.path(outdir, paste0("fig_effect_components_", i, "_", j, ".png")),
         dpi = 300
       )
     }

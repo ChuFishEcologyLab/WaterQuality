@@ -10,8 +10,8 @@ plot_hirsh_vs_theobald <- function(
   outdir = "figs"
 ) {
   df_wq <- master_data
-  cor_07 <- cor(df_wq$hirsh_pearson_lvl7, df_wq$theobald_lvl7)
-  cor_12 <- cor(df_wq$hirsh_pearson_lvl12, df_wq$theobald_lvl12)
+  cor_07 <- stats::cor(df_wq$hirsh_pearson_lvl7, df_wq$theobald_lvl7)
+  cor_12 <- stats::cor(df_wq$hirsh_pearson_lvl12, df_wq$theobald_lvl12)
   cli::cli_alert_info(
     "Correlation Hirsh vs Theobald: lvl 7 -> {cor_07}, lvl 12 -> {cor_12}"
   )
