@@ -1,0 +1,35 @@
+Package: WaterQuality
+Type: Package
+Title: Canadian Watersheds Water Quality
+Date: 2025-03-03
+Version: 0.1.0
+Authors@R: c(
+    person("Cindy", "Chu", email = "Cindy.Chu@dfo-mpo.gc.ca", role = c("aut", "cre")),
+    person("inSileco Inc.", email = "info@insileco.io", comment = "https://insileco.io/", role = c("aut"))
+    )
+Description: Examine how water chemistry exceedances varies with intensity of human activities.
+Encoding: UTF-8
+License: MIT + file LICENSE
+Roxygen: list(markdown = TRUE)
+Depends:
+    R (>= 4.2)
+Imports:
+    arrow,
+    cli,
+	dplyr,
+	fs,
+    ggplot2,
+    janitor,
+    patchwork,
+    stats,
+    terra,
+    utils
+Suggests:
+    knitr,
+    rmarkdown,
+	sf,
+    testthat (>= 3.0.0)
+RoxygenNote: 7.3.3
+LazyLoad: yes
+Config/testthat/edition: 3
+VignetteBuilder: knitr
