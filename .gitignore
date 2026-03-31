@@ -1,0 +1,8 @@
+CLAUDE.md
+.vscode
+.~lock*
+inst/data-raw
+inst/doc
+docs
+figs
+!vignettes/figs
